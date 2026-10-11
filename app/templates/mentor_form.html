@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import csrf, err with context %}
+{% block content %}
+<h1>{{ 'Профильді өңдеу' if mentor else 'Жаңа ментор' }}</h1>
+<form class="panel form" method="post" enctype="multipart/form-data">
+  {{ csrf() }}
+  <label>Аты-жөні
+    <input name="full_name" value="{{ v.get('full_name', '') }}" required maxlength="100">{{ err(errors, 'full_name') }}</label>
+  <label>Бағыт
+    <select name="direction">
+      {% for d in DIRECTIONS %}<option value="{{ d }}" {{ 'selected' if v.get('direction') == d }}>{{ d }}</option>{% endfor %}
+    </select>{{ err(errors, 'direction') }}</label>
+  <label>Тақырыптар (үтір арқылы)
+    <input name="topics" value="{{ v.get('topics', '') }}" maxlength="200">{{ err(errors, 'topics') }}</label>
+  <label>Өзі туралы
+    <textarea name="bio" rows="5" required>{{ v.get('bio', '') }}</textarea>{{ err(errors, 'bio') }}</label>
+  <div class="row">
+    <label>Тәжірибе (жыл)
+      <input type="number" name="experience_years" min="0" max="60" value="{{ v.get('experience_years', 0) }}">{{ err(errors, 'experience_years') }}</label>
+    <label>Макс. студент саны
+      <input type="number" name="max_students" min="1" max="20" value="{{ v.get('max_students', 3) }}">{{ err(errors, 'max_students') }}</label>
+  </div>
+  <label>Сурет (png, jpg, webp · макс. 5 MB)
+    <input type="file" name="avatar" accept=".png,.jpg,.jpeg,.webp">{{ err(errors, 'avatar') }}</label>
+  <button class="btn">Сақтау</button>
+  <a class="btn ghost" href="{{ url_for('main.index') }}">Бас тарту</a>
+</form>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import csrf, err with context %}
+{% block content %}
+<h1>{{ 'Профильді өңдеу' if student else 'Жаңа студент' }}</h1>
+<form class="panel form" method="post" enctype="multipart/form-data">
+  {{ csrf() }}
+  <label>Аты-жөні
+    <input name="full_name" value="{{ v.get('full_name', '') }}" required maxlength="100">{{ err(errors, 'full_name') }}</label>
+  <div class="row">
+    <label>Курс
+      <input type="number" name="course" min="1" max="6" value="{{ v.get('course', 1) }}">{{ err(errors, 'course') }}</label>
+    <label>Телефон
+      <input name="phone" value="{{ v.get('phone', '') }}" placeholder="+77011234567">{{ err(errors, 'phone') }}</label>
+  </div>
+  <label>Қызығатын бағыт
+    <select name="interest">
+      {% for d in DIRECTIONS %}<option value="{{ d }}" {{ 'selected' if v.get('interest') == d }}>{{ d }}</option>{% endfor %}
+    </select>{{ err(errors, 'interest') }}</label>
+  <label>Мақсат
+    <textarea name="goal" rows="4" maxlength="500">{{ v.get('goal', '') }}</textarea>{{ err(errors, 'goal') }}</label>
+  <label>CV (PDF · макс. 5 MB)
+    <input type="file" name="cv" accept=".pdf">{{ err(errors, 'cv') }}</label>
+  <button class="btn">Сақтау</button>
+  <a class="btn ghost" href="{{ url_for('main.index') }}">Бас тарту</a>
+</form>
+{% endblock %}

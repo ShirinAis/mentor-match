@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import avatar, csrf with context %}
+{% block title %}{{ mentor.full_name }}{% endblock %}
+{% block content %}
+<div class="panel detail">
+  {{ avatar(mentor, 'lg') }}
+  <div>
+    <h1>{{ mentor.full_name }}</h1>
+    <span class="chip">{{ mentor.direction }}</span>
+    {% for t in mentor.topic_list %}<span class="chip alt">{{ t }}</span>{% endfor %}
+    <p>{{ mentor.bio }}</p>
+    <p class="muted">Тәжірибе: {{ mentor.experience_years }} жыл · Бос орын: {{ mentor.free_slots }} / {{ mentor.max_students }}</p>
+    {% if can_edit %}
+      <a class="btn" href="{{ url_for('main.mentor_edit', mentor_id=mentor.id) }}">Өңдеу</a>
+    {% endif %}
+    {% if current_user.is_authenticated and current_user.is_admin %}
+      <form class="inline" method="post" action="{{ url_for('main.mentor_delete', mentor_id=mentor.id) }}"
+            onsubmit="return confirm('Менторды өшіру керек пе?')">
+        {{ csrf() }}<button class="btn danger">Өшіру</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Өтінім жіберу</h2>
+  {% if not current_user.is_authenticated %}
+    <p><a href="{{ url_for('auth.login', next=request.path) }}">Кіріңіз</a>, сонда өтінім жібере аласыз.</p>
+  {% elif not current_user.student %}
+    <p class="muted">Өтінімді тек студент аккаунты жібере алады.</p>
+  {% elif my_request and my_request.status in ('pending', 'accepted') %}
+    <p>Сіздің өтініміңіздің статусы: <span class="badge {{ my_request.status }}">{{ STATUS_LABELS[my_request.status] }}</span></p>
+  {% elif mentor.free_slots <= 0 %}
+    <p class="muted">Бұл менторда бос орын жоқ.</p>
+  {% else %}
+    <form method="post" action="{{ url_for('reqs.create', mentor_id=mentor.id) }}">
+      {{ csrf() }}
+      <label>Хабарлама (10–500 символ)
+        <textarea name="message" rows="4" required minlength="10" maxlength="500"></textarea>
+      </label>
+      <button class="btn">Жіберу</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

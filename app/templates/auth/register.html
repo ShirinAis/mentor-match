@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import csrf, err with context %}
+{% block content %}
+<h1>Тіркелу</h1>
+<form class="panel form narrow" method="post">
+  {{ csrf() }}
+  <label>Аты-жөні <input name="full_name" value="{{ v.get('full_name', '') }}" required maxlength="100">{{ err(errors, 'full_name') }}</label>
+  <label>Логин <input name="username" value="{{ v.get('username', '') }}" required maxlength="30">{{ err(errors, 'username') }}</label>
+  <label>Email <input type="email" name="email" value="{{ v.get('email', '') }}" required>{{ err(errors, 'email') }}</label>
+  <label>Мен —
+    <select name="account_type">
+      <option value="student" {{ 'selected' if v.get('account_type') != 'mentor' }}>Студент</option>
+      <option value="mentor" {{ 'selected' if v.get('account_type') == 'mentor' }}>Ментор</option>
+    </select>{{ err(errors, 'account_type') }}</label>
+  <label>Құпиясөз <input type="password" name="password" required>{{ err(errors, 'password') }}</label>
+  <label>Құпиясөзді қайталаңыз <input type="password" name="password2" required></label>
+  <button class="btn">Тіркелу</button>
+</form>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import avatar, pager with context %}
+{% block content %}
+<h1>Менторлар</h1>
+<form class="filters" method="get">
+  <input type="text" name="q" value="{{ q }}" placeholder="Аты, тақырып бойынша іздеу…">
+  <select name="direction">
+    <option value="">Барлық бағыттар</option>
+    {% for d in DIRECTIONS %}<option value="{{ d }}" {{ 'selected' if d == direction }}>{{ d }}</option>{% endfor %}
+  </select>
+  <select name="sort">
+    <option value="name" {{ 'selected' if sort == 'name' }}>Аты бойынша</option>
+    <option value="exp" {{ 'selected' if sort == 'exp' }}>Тәжірибе бойынша</option>
+    <option value="new" {{ 'selected' if sort == 'new' }}>Жаңалары</option>
+  </select>
+  <button class="btn">Іздеу</button>
+</form>
+
+{% if pagination.items %}
+<div class="grid">
+  {% for m in pagination.items %}
+  <a class="card" href="{{ url_for('main.mentor_detail', mentor_id=m.id) }}">
+    {{ avatar(m) }}
+    <h3>{{ m.full_name }}</h3>
+    <span class="chip">{{ m.direction }}</span>
+    <p class="muted">Тәжірибе: {{ m.experience_years }} жыл</p>
+    <p class="muted">Бос орын: {{ m.free_slots }} / {{ m.max_students }}</p>
+  </a>
+  {% endfor %}
+</div>
+{{ pager(pagination, 'main.index') }}
+{% else %}
+<p class="muted">Ештеңе табылмады.</p>
+{% endif %}
+{% endblock %}

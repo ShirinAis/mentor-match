@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import csrf with context %}
+{% block content %}
+<h1>Кіру</h1>
+<form class="panel form narrow" method="post">
+  {{ csrf() }}
+  <label>Логин <input name="username" required autofocus></label>
+  <label>Құпиясөз <input type="password" name="password" required></label>
+  <button class="btn">Кіру</button>
+  <p class="muted">Аккаунт жоқ па? <a href="{{ url_for('auth.register') }}">Тіркелу</a></p>
+</form>
+{% endblock %}

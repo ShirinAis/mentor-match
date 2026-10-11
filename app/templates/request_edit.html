@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import csrf with context %}
+{% block content %}
+<h1>Өтінімді өңдеу</h1>
+<p class="muted">Ментор: {{ req.mentor.full_name }}</p>
+<form class="panel form" method="post">
+  {{ csrf() }}
+  <label>Хабарлама (10–500 символ)
+    <textarea name="message" rows="5" required>{{ text }}</textarea>
+    {% if error %}<div class="field-error">{{ error }}</div>{% endif %}</label>
+  <button class="btn">Сақтау</button>
+  <a class="btn ghost" href="{{ url_for('reqs.list_requests') }}">Бас тарту</a>
+</form>
+{% endblock %}
